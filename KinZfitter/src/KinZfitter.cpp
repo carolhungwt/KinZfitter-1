@@ -27,7 +27,7 @@ KinZfitter::KinZfitter(bool isData)
      if(debug_) std::cout << "KinZfitter. The debug flag is ON with "<<PDFName_<< std::endl;
 	
      /// Initialise HelperFunction
-     helperFunc_ = new HelperFunction();
+     helperFunc_ = new HelperFunction(isData);
      isCorrPTerr_ = true; 
      isData_ = isData; 
 
