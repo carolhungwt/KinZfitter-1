@@ -31,7 +31,7 @@
 //
 // constructors and destructor
 //
-HelperFunction::HelperFunction()
+HelperFunction::HelperFunction(bool isData)
 {
 
         //declarations
@@ -71,11 +71,35 @@ HelperFunction::HelperFunction()
         */
 
         // MORIOND 17
-        TString s_corr_e_1 = TString(edm::FileInPath ("KinZfitter/HelperFunction/hists/DYJetsToLL_M-50_m2eLUT_m2e_1.root" ).fullPath());
-        TString s_corr_e_2 = TString(edm::FileInPath ("KinZfitter/HelperFunction/hists/DYJetsToLL_M-50_m2eLUT_m2e_2.root" ).fullPath());
-        TString s_corr_e_3 = TString(edm::FileInPath ("KinZfitter/HelperFunction/hists/DYJetsToLL_M-50_m2eLUT_m2e_3.root" ).fullPath());
+        TString s_corr_e_1_mc = TString(edm::FileInPath ("KinZfitter/HelperFunction/hists/DYJetsToLL_M-50_m2eLUT_m2e_1.root" ).fullPath());
+        TString s_corr_e_2_mc = TString(edm::FileInPath ("KinZfitter/HelperFunction/hists/DYJetsToLL_M-50_m2eLUT_m2e_2.root" ).fullPath());
+        TString s_corr_e_3_mc = TString(edm::FileInPath ("KinZfitter/HelperFunction/hists/DYJetsToLL_M-50_m2eLUT_m2e_3.root" ).fullPath());
 
-        TString s_corr_mu = TString(edm::FileInPath ("KinZfitter/HelperFunction/hists/DYJetsToLL_M-50_m2muLUT_m2mu.root" ).fullPath());
+        TString s_corr_mu_mc = TString(edm::FileInPath ("KinZfitter/HelperFunction/hists/DYJetsToLL_M-50_m2muLUT_m2mu.root" ).fullPath());
+
+        TString s_corr_e_1_data = TString(edm::FileInPath ("KinZfitter/HelperFunction/hists/DoubleLepton_m2eLUT_m2e_1.root" ).fullPath());
+        TString s_corr_e_2_data = TString(edm::FileInPath ("KinZfitter/HelperFunction/hists/DoubleLepton_m2eLUT_m2e_2.root" ).fullPath());
+        TString s_corr_e_3_data = TString(edm::FileInPath ("KinZfitter/HelperFunction/hists/DoubleLepton_m2eLUT_m2e_3.root" ).fullPath());
+
+        TString s_corr_mu_data = TString(edm::FileInPath ("KinZfitter/HelperFunction/hists/DoubleLepton_m2muLUT_m2mu.root" ).fullPath());
+
+        TString s_corr_e_1, s_corr_e_2, s_corr_e_3, s_corr_mu;
+
+        if (isData) {
+
+           s_corr_e_1 = s_corr_e_1_data;
+           s_corr_e_2 = s_corr_e_2_data;
+           s_corr_e_3 = s_corr_e_3_data;
+           s_corr_mu = s_corr_mu_data;
+
+           } else {
+
+                  s_corr_e_1 = s_corr_e_1_mc;
+                  s_corr_e_2 = s_corr_e_2_mc;
+                  s_corr_e_3 = s_corr_e_3_mc;
+                  s_corr_mu = s_corr_mu_mc;
+
+                  }
 
         f_corr_e_1 = boost::shared_ptr<TFile>( new TFile(s_corr_e_1)); 
         f_corr_e_2 = boost::shared_ptr<TFile>( new TFile(s_corr_e_2)); 
@@ -221,7 +245,10 @@ double HelperFunction::pterr( reco::Candidate *c, bool isData){
                 } else {
                     pterrLep*=1.0;
                 }
-            } else {pterrLep*=1.03;} // hardcode 2        
+            } else {
+                   if (isData){pterrLep*=1.187;}
+                      else{pterrLep*=1.224;}
+                   } // hardcode 2        
         } else if (fabs(eta_e) > 1 && fabs(eta_e) < 2.5) {
             if (pterrLep/pT_e < 0.07) { // hardcode 3
                 int xbin = x_elpTaxis_2->FindBin(pT_e);
@@ -231,7 +258,10 @@ double HelperFunction::pterr( reco::Candidate *c, bool isData){
                 } else {
                     pterrLep*=1.0;
                 }
-            } else {pterrLep*=0.74;} // hardcode 4
+            } else {
+                   if (isData){pterrLep*=0.815;}
+                      else{pterrLep*=0.786;} // hardcode 4
+                   }
         } // 1 < |eta| < 2.5      
     } else {
       

@@ -88,7 +88,7 @@ class HelperFunction
 {
 
    public:
-      HelperFunction();
+      HelperFunction(bool isData);   
       virtual ~HelperFunction();
 
       void setdebug(int d){debug_= d;};

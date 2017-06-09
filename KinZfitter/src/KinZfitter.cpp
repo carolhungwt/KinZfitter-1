@@ -27,7 +27,7 @@ KinZfitter::KinZfitter(bool isData)
      if(debug_) std::cout << "KinZfitter. The debug flag is ON with "<<PDFName_<< std::endl;
 	
      /// Initialise HelperFunction
-     helperFunc_ = new HelperFunction();
+     helperFunc_ = new HelperFunction(isData);
      isCorrPTerr_ = true; 
      isData_ = isData; 
 
@@ -779,8 +779,8 @@ void KinZfitter::MakeModel(/*RooWorkspace &w,*/ KinZfitter::FitInput &input, Kin
     RooRealVar m2("m2", "m2", input.m2);
 
     //gamma
-    RooRealVar pTRECO1_gamma("pTRECO1_gamma", "pTRECO1_gamma", input.pTRECO1_gamma, 5, 500);
-    RooRealVar pTRECO2_gamma("pTRECO2_gamma", "pTRECO2_gamma", input.pTRECO2_gamma, 5, 500);
+    RooRealVar pTRECO1_gamma("pTRECO1_gamma", "pTRECO1_gamma", input.pTRECO1_gamma);//, 5, 500);
+    RooRealVar pTRECO2_gamma("pTRECO2_gamma", "pTRECO2_gamma", input.pTRECO2_gamma);//, 5, 500);
     RooRealVar pTMean1_gamma("pTMean1_gamma", "pTMean1_gamma", 
                              input.pTRECO1_gamma, max(0.5, input.pTRECO1_gamma-2*input.pTErr1_gamma), input.pTRECO1_gamma+2*input.pTErr1_gamma);
     RooRealVar pTMean2_gamma("pTMean2_gamma", "pTMean2_gamma", 
@@ -804,17 +804,17 @@ void KinZfitter::MakeModel(/*RooWorkspace &w,*/ KinZfitter::FitInput &input, Kin
     RooFormulaVar E2_lep("E2_lep", makeE_lep, RooArgList(pTMean2_lep, theta2_lep, m2));  //w.import(E2_lep);
 
     TString makeE_gamma = "TMath::Sqrt((@0*@0)/((TMath::Sin(@1))*(TMath::Sin(@1))))";
-    RooFormulaVar E1_gamma("E1_gamma", makeE_gamma, RooArgList(pTMean1_gamma, theta1_gamma));  //w.import(E1_gamma);
-    RooFormulaVar E2_gamma("E2_gamma", makeE_gamma, RooArgList(pTMean2_gamma, theta2_gamma));  //w.import(E2_gamma);
+    RooFormulaVar E1_gamma("E1_gamma", makeE_gamma, RooArgList(pTRECO1_gamma, theta1_gamma));  //w.import(E1_gamma);
+    RooFormulaVar E2_gamma("E2_gamma", makeE_gamma, RooArgList(pTRECO2_gamma, theta2_gamma));  //w.import(E2_gamma);
 
     //dotProduct 3d
     TString dotProduct_3d = "@0*@1*( ((TMath::Cos(@2))*(TMath::Cos(@3)))/((TMath::Sin(@2))*(TMath::Sin(@3)))+(TMath::Cos(@4-@5)))";
     RooFormulaVar p1v3D2("p1v3D2", dotProduct_3d, RooArgList(pTMean1_lep, pTMean2_lep, theta1_lep, theta2_lep, phi1_lep, phi2_lep));
-    RooFormulaVar p1v3Dph1("p1v3Dph1", dotProduct_3d, RooArgList(pTMean1_lep, pTMean1_gamma, theta1_lep, theta1_gamma, phi1_lep, phi1_gamma));
-    RooFormulaVar p2v3Dph1("p2v3Dph1", dotProduct_3d, RooArgList(pTMean2_lep, pTMean1_gamma, theta2_lep, theta1_gamma, phi2_lep, phi1_gamma));
-    RooFormulaVar p1v3Dph2("p1v3Dph2", dotProduct_3d, RooArgList(pTMean1_lep, pTMean2_gamma, theta1_lep, theta2_gamma, phi1_lep, phi2_gamma));
-    RooFormulaVar p2v3Dph2("p2v3Dph2", dotProduct_3d, RooArgList(pTMean2_lep, pTMean2_gamma, theta2_lep, theta2_gamma, phi2_lep, phi2_gamma));
-    RooFormulaVar ph1v3Dph2("ph1v3Dph2", dotProduct_3d, RooArgList(pTMean1_gamma, pTMean2_gamma, theta1_gamma, theta2_gamma, phi1_gamma, phi2_gamma));
+    RooFormulaVar p1v3Dph1("p1v3Dph1", dotProduct_3d, RooArgList(pTMean1_lep, pTRECO1_gamma, theta1_lep, theta1_gamma, phi1_lep, phi1_gamma));
+    RooFormulaVar p2v3Dph1("p2v3Dph1", dotProduct_3d, RooArgList(pTMean2_lep, pTRECO1_gamma, theta2_lep, theta1_gamma, phi2_lep, phi1_gamma));
+    RooFormulaVar p1v3Dph2("p1v3Dph2", dotProduct_3d, RooArgList(pTMean1_lep, pTRECO2_gamma, theta1_lep, theta2_gamma, phi1_lep, phi2_gamma));
+    RooFormulaVar p2v3Dph2("p2v3Dph2", dotProduct_3d, RooArgList(pTMean2_lep, pTRECO2_gamma, theta2_lep, theta2_gamma, phi2_lep, phi2_gamma));
+    RooFormulaVar ph1v3Dph2("ph1v3Dph2", dotProduct_3d, RooArgList(pTRECO1_gamma, pTRECO2_gamma, theta1_gamma, theta2_gamma, phi1_gamma, phi2_gamma));
 
     TString dotProduct_4d = "@0*@1-@2";
     RooFormulaVar p1D2("p1D2", dotProduct_4d, RooArgList(E1_lep, E2_lep, p1v3D2));  //w.import(p1D2);
