@@ -80,6 +80,9 @@ In your main analyzer:
       vector < TLorentzVector > p4 = kinZfitter->GetRefitP4s(); 
       // refitted mass4l error
       double mass4lErrREFIT = kinZfitter->GetRefitM4lErrFullCov();
+      // mass4l error without refitting, it has pt error corrections used for Higgs mass measurement
+      double mass4lErr = kinZfitter->GetM4lErr();
+
 
   There is a function called GetRefitM4lErr() which calculates mass4l error after refitting 
   assuming that all lepton momenta are UNcorrelated 
