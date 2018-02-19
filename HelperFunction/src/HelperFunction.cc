@@ -216,6 +216,19 @@ double HelperFunction::masserror( std::vector<TLorentzVector> Lep, std::vector<d
         return sqrt(masserr);
 }
 
+double HelperFunction::pterrcorr(reco::Candidate *c, bool isData, bool corr){
+  if(corr)  return pterr(Candidate,isData);
+  else{
+    reco::GsfElectron *gsf; reco::Muon *mu; reco::PFCandidate *pf;
+    pat::Muon *patmu;
+    double pterrLep = 0.0;
+    if ((gsf = dynamic_cast<reco::GsfElectron *> (&(*c)) ) != 0)  pterrLep=pterr(gsf, isData);
+    else if ((mu = dynamic_cast<reco::Muon *> (&(*c)) ) != 0)  pterrLep=pterr(mu, isData);
+    else if ((pf = dynamic_cast<reco::PFCandidate *> (&(*c)) ) != 0)   pterrLep=pterr(c, isData);
+    return pterrLep; 
+  }
+}
+
 
 double HelperFunction::pterr( reco::Candidate *c, bool isData){
 
