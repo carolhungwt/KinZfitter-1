@@ -95,7 +95,7 @@ class HelperFunction
 
       //ForZ
       double pterr(reco::Candidate *c, bool isData);
-      double pterrcorr(reco::Candidate *c, bool isData, bool corr);
+      double pterrcorr(const reco::Candidate *c1, bool isData, bool corr);
 
       //double pterr(pat::Electron electron, bool isData);
       //double pterr(pat::Muon muon, bool isData);

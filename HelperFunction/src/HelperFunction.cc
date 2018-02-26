@@ -216,8 +216,9 @@ double HelperFunction::masserror( std::vector<TLorentzVector> Lep, std::vector<d
         return sqrt(masserr);
 }
 
-double HelperFunction::pterrcorr(reco::Candidate *c, bool isData, bool corr){
-  if(corr)  return pterr(Candidate,isData);
+double HelperFunction::pterrcorr(const reco::Candidate *c1, bool isData, bool corr){
+  reco::Candidate* c = (reco::Candidate*) c1->clone();
+  if(corr)  return pterr(c,isData);
   else{
     reco::GsfElectron *gsf; reco::Muon *mu; reco::PFCandidate *pf;
     pat::Muon *patmu;
